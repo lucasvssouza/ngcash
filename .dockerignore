@@ -1,0 +1,9 @@
+server/node_modules/*
+
+front/.git
+front/.gitignore
+.front/gitattributes
+
+server/.git
+server/.gitignore
+server/.gitattributes
