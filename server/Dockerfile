@@ -1,6 +1,7 @@
-FROM node:18
+FROM node:19
 WORKDIR /ngcash/server
 COPY package*.json .
+
 RUN npm install 
 
 COPY . .
