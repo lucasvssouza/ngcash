@@ -21,7 +21,12 @@ function AuthProvider({ children }: IProps) {
       setData(check.data);
       setAutorized(check.autorized);
       setLoading(check.loading);
-    } catch {}
+      if (check.autorized === false) {
+        localStorage.removeItem("?acessToken");
+      }
+    } catch {
+      console.log("API desligada!");
+    }
   };
 
   const tokenDestroy = () => {

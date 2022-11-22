@@ -41,7 +41,7 @@ const CashOut = (): React.ReactElement => {
       return <LogRegError>* Saldo insuficiente</LogRegError>;
     } else if (checkValue === "negativo") {
       return (
-        <LogRegError>* Não é possível transferir saldo negativo</LogRegError>
+        <LogRegError>* Digite o valor que deseja transferir</LogRegError>
       );
     } else {
       return <div style={{ height: "18px" }}></div>;
@@ -77,6 +77,7 @@ const CashOut = (): React.ReactElement => {
     } else {
       setCheckCredited("valido");
     }
+    
     if (+fixed < +transValue) {
       setCheckValue("insuficiente");
     } else if (+transValue <= 0) {

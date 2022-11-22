@@ -11,7 +11,7 @@ var jwt = require("jsonwebtoken");
 export class AccountsController {
   async create(req: Request, res: Response) {
     const { username, password } = req.body;
-
+    
     const userExists = await userRepository.findOneBy({ username });
 
     if (userExists) {
