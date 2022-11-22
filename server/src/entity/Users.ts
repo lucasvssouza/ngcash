@@ -14,12 +14,12 @@ export class Users {
 
   @Column({
     type: "varchar",
-    unique: true
+    unique: true,
   })
   password: string;
 
-  @OneToOne(() => Accounts)
-  @JoinColumn()
+  @OneToOne((type) => Accounts, { eager: true })
+  @JoinColumn({ name: "accountId" })
   accountId: Accounts;
 
   constructor() {

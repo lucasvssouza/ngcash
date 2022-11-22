@@ -1,9 +1,16 @@
 {
    "devDependencies": {
+      "@types/react-text-mask": "^5.4.11",
       "ts-node": "10.7.0",
       "typescript": "4.5.2"
    },
    "scripts": {
       "start": "ts-node src/index.ts"
+   },
+   "dependencies": {
+      "@types/text-mask-addons": "^3.8.1",
+      "@types/text-mask-core": "^5.1.1",
+      "react-text-mask": "^5.5.0",
+      "text-mask-addons": "^3.8.0"
    }
 }

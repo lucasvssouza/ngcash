@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { Users } from "../entity/Users";
 import { accountsRepository } from "../repositories/accountsRepository";
 import { userRepository } from "../repositories/usersRepository";
 var jwt = require("jsonwebtoken");
@@ -14,21 +15,15 @@ export const UserMiddleware = async (
     return res.status(401).json("Não autorizado");
   }
 
-  const token = authorization.split(" ")[1];
+  const id = jwt.verify(authorization, process.env.JWT_PASS);
 
-  const { id } = jwt.verify(token, process.env.JWT_PASS);
+  const checkUser = await userRepository.findOneBy({
+    id: id.user_id,
+  });
 
-  const user = await userRepository.findOneBy({ id });
+  const { password: _, ...loggedUser } = checkUser;
 
-  if (!user) {
-    return res.status(401).json("Não autorizado");
-  }
-
-  const { password: _, ...loggedUser } = user;
-
-  const account = await accountsRepository.findOneBy(loggedUser.accountId);
-
-  req.data = { userData: loggedUser, accountData: account };
+  req.data = loggedUser;
 
   next();
 };

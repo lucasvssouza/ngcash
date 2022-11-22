@@ -1,2 +1,1 @@
-# ngcash
- 
+# Aplicação de Teste Dockerizada - NGCash

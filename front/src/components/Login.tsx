@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import {
   LogRegComponent,
-  LogRegContainer,
-  LogRegTitle,
-  LogRegForm,
-  LogRegLabel,
-  LogRegInput,
+  DefaultContainer,
+  DefaultTitle,
+  DefaultForm,
+  DefaultLabel,
+  DefaultInput,
   LogRegRegister,
-  LogRegButton,
+  DefaultButton,
   LogRegError,
 } from "../styles";
+import { login } from "../api";
 
-const Login = () => {
+const Login = (): React.ReactElement => {
   const [user, setUser] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
@@ -38,53 +39,67 @@ const Login = () => {
     }
   };
 
-  const submitForm = (e: React.ChangeEvent<HTMLFormElement>) => {
+  const submitForm = async () => {
     if (password === "") {
       setPasswordcheck("vazio");
     } else {
       setPasswordcheck("valido");
     }
 
-    e.preventDefault();
     if (user.trim() === "") {
       setUsercheck("vazio");
     } else {
       setUsercheck("valido");
     }
+
+    if (!(user.trim() === "") && !(password === "")) {
+      try {
+        const data = await login(user, password);
+        if (data === 500) {
+          setUsercheck("invalido");
+        } else {
+          localStorage.setItem("?acessToken", data);
+          const baseURL = window.location.origin;
+          window.location.href = baseURL + "/home";
+        }
+      } catch {}
+    }
   };
 
   return (
     <LogRegComponent>
-      <LogRegContainer>
-        <LogRegTitle>Login NG.CASH</LogRegTitle>
-        <LogRegForm onSubmit={submitForm}>
+      <DefaultContainer>
+        <DefaultTitle>Login NG.CASH</DefaultTitle>
+        <DefaultForm>
           <div>
-            <LogRegLabel>
+            <DefaultLabel>
               <label>Usuário</label>
-            </LogRegLabel>
-            <LogRegInput
+            </DefaultLabel>
+            <DefaultInput
               placeholder="Digite seu nome de usuário..."
               value={user}
               onChange={(e) => setUser(e.target.value.replace(" ", ""))}
-            ></LogRegInput>
+            ></DefaultInput>
             {UserError()}
-            <LogRegLabel>
+            <DefaultLabel>
               <label>Senha</label>
-            </LogRegLabel>
-            <LogRegInput
+            </DefaultLabel>
+            <DefaultInput
               placeholder="Digite sua senha..."
               value={password}
               onChange={(e) => setPassword(e.target.value.replace(" ", ""))}
               type="password"
-            ></LogRegInput>
+            ></DefaultInput>
             {PasswordError()}
             <LogRegRegister href="/register">
               Não possue uma conta? Cadraste-se!
             </LogRegRegister>
           </div>
-          <LogRegButton type="submit">Entrar</LogRegButton>
-        </LogRegForm>
-      </LogRegContainer>
+        </DefaultForm>
+        <DefaultButton type="button" onClick={submitForm}>
+          Entrar
+        </DefaultButton>
+      </DefaultContainer>
     </LogRegComponent>
   );
 };

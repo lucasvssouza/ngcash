@@ -1,30 +1,31 @@
-import React,{ useState } from "react";
+import React, { useState } from "react";
 import {
   LogRegComponent,
-  LogRegContainer,
-  LogRegTitle,
-  LogRegForm,
-  LogRegLabel,
-  LogRegInput,
+  DefaultContainer,
+  DefaultTitle,
+  DefaultForm,
+  DefaultLabel,
+  DefaultInput,
   LogRegRegister,
-  LogRegButton,
+  DefaultButton,
   LogRegError,
 } from "../styles";
+import { register } from "../api";
 
-const Register = () => {
+const Register = (): React.ReactElement => {
   const [user, setUser] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
   const [usercheck, setUsercheck] = useState<string>("valido");
   const [passwordcheck, setPasswordcheck] = useState<string>("valido");
 
-  const emptyImput = "* Preencha esse campo"
+  const emptyImput = "* Preencha esse campo";
 
   const UserError = (): JSX.Element => {
     if (usercheck === "vazio") {
       return <LogRegError>{emptyImput}</LogRegError>;
     } else if (usercheck === "invalido") {
-      return <LogRegError>* Nome de usuário já em uso</LogRegError>;
+      return <LogRegError>* Nome de usuário já cadrastrado</LogRegError>;
     } else if (usercheck === "pequeno") {
       return <LogRegError>* O nome de usuário é muito curto</LogRegError>;
     } else {
@@ -46,16 +47,8 @@ const Register = () => {
     }
   };
 
-  const submitForm = (e: React.ChangeEvent<HTMLFormElement>) => {
+  const submitForm = async () => {
     const regEx = new RegExp("^(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
-
-    if (password === "") {
-      setPasswordcheck("vazio");
-    } else if (regEx.test(password.trim()) === false) {
-      setPasswordcheck("invalido");
-    } else {
-      setPasswordcheck("valido");
-    }
 
     if (user.trim() === "") {
       setUsercheck("vazio");
@@ -65,41 +58,66 @@ const Register = () => {
       setUsercheck("valido");
     }
 
-    e.preventDefault();
+    if (password === "") {
+      setPasswordcheck("vazio");
+    } else if (regEx.test(password.trim()) === false) {
+      setPasswordcheck("invalido");
+    } else {
+      setPasswordcheck("valido");
+    }
+
+    if (
+      !(user.trim() === "") &&
+      user.length >= 3 &&
+      !(password === "") &&
+      regEx.test(password.trim()) === true
+    ) {
+      try {
+        const data = await register(user, password);
+        if (data === 500) {
+          setUsercheck("invalido");
+        } else {
+          const baseURL = window.location.origin;
+          window.location.href = baseURL + "/login";
+        }
+      } catch {}
+    }
   };
 
   return (
     <LogRegComponent>
-      <LogRegContainer>
-        <LogRegTitle>Cadastro NG.CASH</LogRegTitle>
-        <LogRegForm onSubmit={submitForm}>
+      <DefaultContainer>
+        <DefaultTitle>Cadastro NG.CASH</DefaultTitle>
+        <DefaultForm>
           <div>
-            <LogRegLabel>
+            <DefaultLabel>
               <label>Usuário</label>
-            </LogRegLabel>
-            <LogRegInput
+            </DefaultLabel>
+            <DefaultInput
               placeholder="Digite um nome de usuário..."
               value={user}
               onChange={(e) => setUser(e.target.value.replace(" ", ""))}
-            ></LogRegInput>
+            ></DefaultInput>
             {UserError()}
-            <LogRegLabel>
+            <DefaultLabel>
               <label>Senha</label>
-            </LogRegLabel>
-            <LogRegInput
+            </DefaultLabel>
+            <DefaultInput
               placeholder="Digite uma senha..."
               value={password}
               onChange={(e) => setPassword(e.target.value.replace(" ", ""))}
               type="password"
-            ></LogRegInput>
+            ></DefaultInput>
             {PasswordError()}
             <LogRegRegister href="/login">
               Já possue uma conta? Faça o login!
             </LogRegRegister>
           </div>
-          <LogRegButton type="submit">Cadrastrar</LogRegButton>
-        </LogRegForm>
-      </LogRegContainer>
+        </DefaultForm>
+        <DefaultButton type="button" onClick={submitForm}>
+          Cadrastrar
+        </DefaultButton>
+      </DefaultContainer>
     </LogRegComponent>
   );
 };
