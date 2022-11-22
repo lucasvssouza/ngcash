@@ -32,12 +32,13 @@ services:
       - 5000:5000
     volumes:
       - ./server:/ngcash/server  
-      - /ngcash/server/node_modules/bcrypt/
+      - /ngcash/server/node_modules/
     environment:
       - WATCHPACK_POLLING=true 
     depends_on:
       - db
     container_name: api
+    
 
   app:
     build: 
@@ -45,6 +46,7 @@ services:
       context: './front'
     volumes: 
       - ./front:/ngcash/app
+      - /ngcash/app/node_modules/
     ports:
       - 3000:3000
     command: npm start
@@ -56,4 +58,5 @@ services:
 
 volumes:
   pg-data:
+  
   
